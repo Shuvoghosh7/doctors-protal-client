@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Footer from '../Shared/Footer/Footer';
 import AppointmentBanner from './AppointmentBanner';
+import AvailableAppointments from './AvailableAppointments';
+
 
 const Appointment = () => {
+    const [selected, setSelected] = useState(new Date())
     return (
         <div>
-            <h1>Appo</h1>
-            <AppointmentBanner/>
+            <AppointmentBanner  selected={selected} setSelected={setSelected}/>
+            <AvailableAppointments selected={selected}/>
             <Footer/>
         </div>
     );
