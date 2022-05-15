@@ -6,7 +6,7 @@ import Service from './Service';
 const AvailableAppointments = ({selected}) => {
     const[services,setServices]=useState([])
     const[treatment,setTreatment]=useState({})
-    console.log(services)
+    console.log(treatment)
     useEffect(() => {
         fetch('http://localhost:5000/service')
             .then(res => res.json())

@@ -1,19 +1,46 @@
 import { format } from 'date-fns';
 import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { toast } from 'react-toastify';
 import auth from '../Firebase/Firebase.init';
 
 const BookinModal = ({ treatment, selected, setTreatment }) => {
     const { _id, name, slots } = treatment;
     const [user, loading, error] = useAuthState(auth);
-    console.log(user)
+    const formatteDate = format(selected, 'PP')
+
     const handleBooking = event => {
         event.preventDefault();
         const slot = event.target.slot.value;
-        console.log(_id, name, slot);
 
-        // to close the modal
-        setTreatment(null);
+        const booking = {
+            treatmentId: _id,
+            treatment: name,
+            date: formatteDate,
+            slot,
+            patient: user.email,
+            patientName: user.displayName,
+            phone: event.target.phone.value
+        }
+        fetch('http://localhost:5000/booking', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(booking)
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+                if(data.success){
+                    toast(`Appointment is set ${formatteDate} at ${slot}`)
+                }else{
+                    toast(`Already have an Appointment is set ${data.booking?.date} at ${data.booking?.slot}`)
+                }
+                // to close the modal
+                setTreatment(null);
+            });
+
     }
     return (
         <div>
@@ -26,7 +53,7 @@ const BookinModal = ({ treatment, selected, setTreatment }) => {
                         <input type="text" disabled value={format(selected, 'PP')} className="input input-bordered w-full max-w-xs" />
                         <select name="slot" className="select select-bordered w-full max-w-xs">
                             {
-                                slots?.map((slot, index) =><option 
+                                slots?.map((slot, index) => <option
                                     key={index}
                                     value={slot}
                                 >{slot}</option>)
