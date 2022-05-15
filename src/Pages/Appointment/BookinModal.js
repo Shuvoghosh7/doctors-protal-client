@@ -4,11 +4,10 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { toast } from 'react-toastify';
 import auth from '../Firebase/Firebase.init';
 
-const BookinModal = ({ treatment, selected, setTreatment }) => {
+const BookinModal = ({ date, treatment, setTreatment,refetch }) => {
     const { _id, name, slots } = treatment;
     const [user, loading, error] = useAuthState(auth);
-    const formatteDate = format(selected, 'PP')
-
+    const formattedDate = format(date, 'PP');
     const handleBooking = event => {
         event.preventDefault();
         const slot = event.target.slot.value;
@@ -16,32 +15,33 @@ const BookinModal = ({ treatment, selected, setTreatment }) => {
         const booking = {
             treatmentId: _id,
             treatment: name,
-            date: formatteDate,
+            date: formattedDate,
             slot,
             patient: user.email,
             patientName: user.displayName,
             phone: event.target.phone.value
         }
+
         fetch('http://localhost:5000/booking', {
             method: 'POST',
             headers: {
-                'Content-type': 'application/json'
+                'content-type': 'application/json'
             },
             body: JSON.stringify(booking)
         })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data)
+            .then(res => res.json())
+            .then(data => {
                 if(data.success){
-                    toast(`Appointment is set ${formatteDate} at ${slot}`)
-                }else{
-                    toast(`Already have an Appointment is set ${data.booking?.date} at ${data.booking?.slot}`)
+                    toast(`Appointment is set, ${formattedDate} at ${slot}`)
                 }
-                // to close the modal
+                else{
+                    toast.error(`Already have and appointment on ${data.booking?.date} at ${data.booking?.slot}`)
+                }
+                refetch()
                 setTreatment(null);
             });
-
     }
+
     return (
         <div>
             <input type="checkbox" id="booking-modal" className="modal-toggle" />
@@ -50,10 +50,10 @@ const BookinModal = ({ treatment, selected, setTreatment }) => {
                     <label htmlFor="booking-modal" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
                     <h3 className="font-bold text-lg text-secondary">Booking for: {name}</h3>
                     <form onSubmit={handleBooking} className='grid grid-cols-1 gap-3 justify-items-center mt-2'>
-                        <input type="text" disabled value={format(selected, 'PP')} className="input input-bordered w-full max-w-xs" />
+                        <input type="text" disabled value={format(date, 'PP')} className="input input-bordered w-full max-w-xs" />
                         <select name="slot" className="select select-bordered w-full max-w-xs">
                             {
-                                slots?.map((slot, index) => <option
+                                slots.map((slot, index) => <option
                                     key={index}
                                     value={slot}
                                 >{slot}</option>)
