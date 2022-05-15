@@ -10,6 +10,11 @@ import Singup from './Pages/Login/Singup';
 import RequireAuth from './Pages/Login/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DashBoard from './Pages/DashBoard/DashBoard';
+import MyAppointment from './Pages/DashBoard/MyAppointment';
+import MyReview from './Pages/DashBoard/MyReview/MyReview'
+import MyHistory from './Pages/DashBoard/MyHistory';
+
 function App() {
   return (
     <div className='max-w-7xl mx-auto'>
@@ -22,6 +27,15 @@ function App() {
            <Appointment/>
          </RequireAuth>
        }/>
+       <Route path='/dashboard' element={
+         <RequireAuth>
+           <DashBoard/>
+         </RequireAuth>
+       }>
+         <Route index element={<MyAppointment/>}/>
+         <Route path='review' element={<MyReview/>} />
+         <Route path='history' element={<MyHistory/>} />
+       </Route>
        <Route path='/login' element={<Login/>}/>
        <Route path='/singup' element={<Singup/>}/>
      </Routes>
