@@ -4,6 +4,7 @@ import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-fireba
 import auth from '../Firebase/Firebase.init';
 import Loading from '../Shared/Loading/Loading';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useToken from '../../Hooks/useToken';
 const Login = () => {
     const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
     const [
@@ -13,6 +14,8 @@ const Login = () => {
         error,
       ] = useSignInWithEmailAndPassword(auth);
     const { register, formState: { errors }, handleSubmit } = useForm();
+
+    const [token]=useToken(gUser || user)
     const onSubmit = data => {
         console.log(data)
         signInWithEmailAndPassword(data.email,data.password)
@@ -23,10 +26,10 @@ const Login = () => {
     let from = location.state?.from?.pathname || "/";
     
     useEffect(()=>{
-        if (gUser || user) {
+        if (token) {
             navigate(from, { replace: true });
         }
-    },[gUser,user,from,gUser])
+    },[token,from,navigate])
     if( loading || gLoading){
         return <Loading/>
     }

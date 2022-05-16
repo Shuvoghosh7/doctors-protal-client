@@ -14,6 +14,7 @@ import DashBoard from './Pages/DashBoard/DashBoard';
 import MyAppointment from './Pages/DashBoard/MyAppointment';
 import MyReview from './Pages/DashBoard/MyReview/MyReview'
 import MyHistory from './Pages/DashBoard/MyHistory';
+import Users from './Pages/DashBoard/Users';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
          <Route index element={<MyAppointment/>}/>
          <Route path='review' element={<MyReview/>} />
          <Route path='history' element={<MyHistory/>} />
+         <Route path='users' element={<Users/>} />
        </Route>
        <Route path='/login' element={<Login/>}/>
        <Route path='/singup' element={<Singup/>}/>
