@@ -1,13 +1,21 @@
 import React from 'react';
 import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import Loading from '../Shared/Loading/Loading';
 import UserRow from './UserRow';
 
 const Users = () => {
-    const { data: users, isLoading ,refetch} = useQuery('users', () => fetch('http://localhost:5000/user',{method:"GET",
-    headers:{
-        'authorization':`Bearer ${localStorage.getItem('AccessToken')}`
-    }}).then(res => res.json()))
+    const navigate = useNavigate()
+    const { data: users, isLoading, refetch } = useQuery('users', () => fetch('http://localhost:5000/user', {
+        method: "GET",
+        headers: {
+            'authorization': `Bearer ${localStorage.getItem('AccessToken')}`
+        }
+    })
+        .then(res => {
+            res.json()
+            navigate('/')
+        }))
     if (isLoading) {
         return <Loading />
     }
@@ -26,11 +34,11 @@ const Users = () => {
                     </thead>
                     <tbody>
                         {
-                          users.map(user => <UserRow
-                            key={user._id}
-                            user={user}
-                            refetch={refetch}
-                          ></UserRow>)  
+                            users.map(user => <UserRow
+                                key={user._id}
+                                user={user}
+                                refetch={refetch}
+                            ></UserRow>)
                         }
                     </tbody>
                 </table>

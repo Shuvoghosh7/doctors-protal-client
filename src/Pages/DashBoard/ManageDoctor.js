@@ -5,8 +5,8 @@ import DeleteConfermationModal from './DeleteConfermationModal';
 import DoctorRow from './DoctorRow';
 
 const ManageDoctor = () => {
-    const[deletingDoctor,setDeletingDoctor]=useState(null)
-    const { data: doctors, isLoading ,refetch} = useQuery('doctors', () => fetch('http://localhost:5000/doctor', {
+    const [deletingDoctor, setDeletingDoctor] = useState(null)
+    const { data: doctors, isLoading, refetch } = useQuery('doctors', () => fetch('http://localhost:5000/doctor', {
         headers: {
             'Content-type': 'application/json',
             'authorization': `Bearer ${localStorage.getItem('AccessToken')}`
@@ -31,21 +31,21 @@ const ManageDoctor = () => {
                     </thead>
                     <tbody>
                         {
-                            doctors.map((doctor,index) =><DoctorRow 
-                            key={doctor._id}
-                            doctor={doctor}
-                            index={index}
-                            refetch={refetch}
-                            setDeletingDoctor={setDeletingDoctor}
+                            doctors.map((doctor, index) => <DoctorRow
+                                key={doctor._id}
+                                doctor={doctor}
+                                index={index}
+                                refetch={refetch}
+                                setDeletingDoctor={setDeletingDoctor}
                             />)
                         }
                     </tbody>
                 </table>
             </div>
-            {deletingDoctor && <DeleteConfermationModal 
-            deletingDoctor={deletingDoctor}
-            refetch={refetch}
-            setDeletingDoctor={setDeletingDoctor}
+            {deletingDoctor && <DeleteConfermationModal
+                deletingDoctor={deletingDoctor}
+                refetch={refetch}
+                setDeletingDoctor={setDeletingDoctor}
             />}
         </div>
     );

@@ -5,60 +5,60 @@ import { useQuery } from 'react-query';
 import { toast } from 'react-toastify';
 import Loading from '../Shared/Loading/Loading';
 const AddDoctor = () => {
-    const { register, formState: { errors }, handleSubmit,reset } = useForm();
+    const { register, formState: { errors }, handleSubmit, reset } = useForm();
 
-    const { data: services, isLoading} = useQuery('services', () => fetch('http://localhost:5000/service').then(res => res.json()))
-    
-    const imageStorageKey='1102adc3ea9ff69facf45e7edc08700d'
-      /**
-     * 3 ways to store images
-     * 1. Third party storage //Free open public storage is ok for Practice project 
-     * 2. Your own storage in your own server (file system)
-     * 3. Database: Mongodb 
-     * 
-     * YUP: to validate file: Search: Yup file validation for react hook form
-    */
+    const { data: services, isLoading } = useQuery('services', () => fetch('http://localhost:5000/service').then(res => res.json()))
+
+    const imageStorageKey = '1102adc3ea9ff69facf45e7edc08700d'
+    /**
+   * 3 ways to store images
+   * 1. Third party storage //Free open public storage is ok for Practice project 
+   * 2. Your own storage in your own server (file system)
+   * 3. Database: Mongodb 
+   * 
+   * YUP: to validate file: Search: Yup file validation for react hook form
+  */
     const onSubmit = async data => {
-       const image=data.image[0]
-       const formData = new FormData();
-       formData.append('image',image );
-       const url=`https://api.imgbb.com/1/upload?key=${imageStorageKey}`
-       fetch(url,{
-           method:'POST',
-           body:formData
-       })
-       .then(res => res.json())
-       .then(result => {
-           if(result.success){
-               const img=result.data.url
-               const doctor={
-                   name:data.name,
-                   email:data.email,
-                   speciality:data.speciality,
-                   img:img
-               }
-               //send to your database
-               fetch('http://localhost:5000/doctor',{
-                   method:"POST",
-                   headers:{
-                    'Content-type': 'application/json',
-                    'authorization':`Bearer ${localStorage.getItem('AccessToken')}`
-                   },
-                   body:JSON.stringify(doctor)
-               })
-               .then(res =>res.json())
-               .then(inserted =>{
-                   if(inserted.insertedId){
-                       toast.success('Doctor added successfully')
-                       reset()
-                   }
-                   else{
-                       toast.error("Field to added Doctor")
-                   }
-               })
-           }
-           console.log('imgbb',result)
+        const image = data.image[0]
+        const formData = new FormData();
+        formData.append('image', image);
+        const url = `https://api.imgbb.com/1/upload?key=${imageStorageKey}`
+        fetch(url, {
+            method: 'POST',
+            body: formData
         })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    const img = result.data.url
+                    const doctor = {
+                        name: data.name,
+                        email: data.email,
+                        speciality: data.speciality,
+                        img: img
+                    }
+                    //send to your database
+                    fetch('http://localhost:5000/doctor', {
+                        method: "POST",
+                        headers: {
+                            'Content-type': 'application/json',
+                            'authorization': `Bearer ${localStorage.getItem('AccessToken')}`
+                        },
+                        body: JSON.stringify(doctor)
+                    })
+                        .then(res => res.json())
+                        .then(inserted => {
+                            if (inserted.insertedId) {
+                                toast.success('Doctor added successfully')
+                                reset()
+                            }
+                            else {
+                                toast.error("Field to added Doctor")
+                            }
+                        })
+                }
+                console.log('imgbb', result)
+            })
 
     };
     if (isLoading) {
@@ -120,15 +120,15 @@ const AddDoctor = () => {
                     <label className="label">
                         <span className="label-text">speciality</span>
                     </label>
-                    <select {...register("speciality") }class="select input-bordered w-full max-w-xs">
+                    <select {...register("speciality")} class="select input-bordered w-full max-w-xs">
                         {
-                           services.map(service =><option
-                            key={service._id}
-                            value={service.name}
-                           >{service.name}
-                           </option>) 
+                            services.map(service => <option
+                                key={service._id}
+                                value={service.name}
+                            >{service.name}
+                            </option>)
                         }
-            
+
                     </select>
                 </div>
                 <div className="form-control w-full max-w-xs">

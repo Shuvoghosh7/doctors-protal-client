@@ -1,8 +1,8 @@
 import React from 'react';
 import { toast } from 'react-toastify';
 
-const DeleteConfermationModal = ({ deletingDoctor,refetch,setDeletingDoctor }) => {
-    const { name ,email} = deletingDoctor
+const DeleteConfermationModal = ({ deletingDoctor, refetch, setDeletingDoctor }) => {
+    const { name, email } = deletingDoctor
     const handealDelete = () => {
         fetch(`http://localhost:5000/doctor/${email}`, {
             method: 'DELETE',
